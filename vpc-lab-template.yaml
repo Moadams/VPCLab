@@ -95,6 +95,7 @@ Parameters:
 
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
+    Default: vpc-key-pair
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances.
 
 Resources:
@@ -118,14 +119,14 @@ Resources:
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       InternetGatewayId: !Ref InternetGateway
 
   
   PublicSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       CidrBlock: !Ref PublicSubnetACIDR
       AvailabilityZone: !Select [0, !GetAZs ''] 
       MapPublicIpOnLaunch: 'true' 
@@ -137,7 +138,7 @@ Resources:
   PublicSubnetB:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       CidrBlock: !Ref PublicSubnetBCIDR
       AvailabilityZone: !Select [1, !GetAZs ''] 
       MapPublicIpOnLaunch: 'true'
@@ -149,7 +150,7 @@ Resources:
   PrivateSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       CidrBlock: !Ref PrivateSubnetACIDR
       AvailabilityZone: !Select [0, !GetAZs ''] 
       Tags:
@@ -160,7 +161,7 @@ Resources:
   PrivateSubnetB:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       CidrBlock: !Ref PrivateSubnetBCIDR
       AvailabilityZone: !Select [1, !GetAZs ''] 
       Tags:
@@ -190,7 +191,7 @@ Resources:
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       Tags:
         - Key: Name
           Value: !Sub "${ProjectName}-Public-RT"
@@ -208,7 +209,7 @@ Resources:
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       Tags:
         - Key: Name
           Value: !Sub "${ProjectName}-Private-RT"
@@ -283,7 +284,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable HTTP/SSH access to web server
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -307,7 +308,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH/ICMP from web server and all outbound.
-      VpcId: !Ref LabVPC
+      VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -368,7 +369,7 @@ Resources:
 Outputs:
   VpcId:
     Description: The ID of the newly created VPC.
-    Value: !Ref LabVPC
+    Value: !Ref MyVPC
 
   PublicWebServerPublicIp:
     Description: The Public IP address of the Apache Web Server.
